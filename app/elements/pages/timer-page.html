@@ -1,0 +1,53 @@
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="timer-page">
+
+  <template>
+    <div fit>
+      <countdown-timer id="timer" target="300000"></countdown-timer>
+      <paper-button id="controll">{{startText}}</paper-button>
+      <paper-button id="reset">reset</paper-button>
+    </div>
+  </template>
+
+  <script>
+    Polymer('timer-page', {
+      startText: 'START',
+      stopText : 'STOP',
+      disabledAttr : 'disabled',
+      ready: function(){
+        this.initElm();
+      },
+      initElm: function(){
+        this.$.controll.addEventListener('click', this.onClickControll.bind(this));
+        this.$.reset.addEventListener('click', this.onClickReset.bind(this));
+      },
+      onClickControll: function(){
+        if(this.isStart()){
+          this.$.timer.start();
+          this.$.reset.setAttribute(this.disabledAttr, '');
+        }else{
+          this.$.timer.stop();
+          this.$.reset.removeAttribute(this.disabledAttr);
+        }
+        this.toggleControllText();
+      },
+      isStart: function(){
+        var elm = this.$.controll,
+            text = elm.innerText;
+        return text === this.startText;
+      },
+      onClickReset: function(){
+        if(!this.$.reset.hasAttribute(this.disabledAttr)){
+          this.$.timer.reset();
+        }
+      },
+      toggleControllText: function(){
+        var elm = this.$.controll,
+            next = this.isStart() ? this.stopText : this.startText;
+        elm.innerText = next;
+      },
+    });
+  </script>
+

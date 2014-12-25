@@ -1,0 +1,105 @@
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="countdown-timer" attributes="target separator warning finishMessage">
+
+  <template>
+     <paper-input id="inputs" label="00:00"></paper-input>
+    <p hidden><span id="m" class="m">{{m}}</span><span class="m separator">{{separator}}</span><span id="s" class="s">{{s}}</span><span class="s separator">{{separator}}</span><span id="ms" class="ms">{{ms}}</span></p>
+  </template>
+
+  <script>
+    Polymer('countdown-timer', {
+      target       : 0,
+      warning      : 1000 * 10,
+      separator    : ':',
+      finishMessage: 'Times Up',
+      startTime    : null,
+      totalTime    : 0,
+      elapsedTime  : 0,
+      ready: function(){
+        var me = this;
+        me.initTime();
+        me.polyfill();
+        me.initElm();
+      },
+      initTime: function(){
+        var nums = this.string2num(this.target);
+        this.setTimes(nums.m, nums.s, nums.ms);
+      },
+      zeroPadding: function(num, length){
+        return num.toLocaleString( "ja-JP" , { useGrouping : false , minimumIntegerDigits : length });
+      },
+      setTimes: function(m, s, ms){
+        this.m = this.zeroPadding(m, 2);
+        this.s = this.zeroPadding(s, 2);
+        this.ms = this.zeroPadding(ms, 3);
+      },
+      string2num: function(target){
+        var num = parseInt(target),
+            m = Math.floor(num/1000/60),
+            s = Math.floor(num/1000) - (m*60),
+            ms = num - (m*1000*60) - (s*1000);
+        return { m : m, s : s, ms: ms };
+      },
+      initElm: function(){
+        this.elmM = this.$.m;
+        this.elmS = this.$.s;
+        this.elmMs = this.$.ms;
+      },
+      start: function(){
+        this.startTime = Date.now();
+        this.raf = requestAnimationFrame(this.tick.bind(this, this.target, this.startTime, Date.now(), this.elapsedTime));
+      },
+      tick: function(target, startTime, current, elapsed){
+        var totalTime = current - startTime;
+        var res = target - (totalTime + elapsed);
+
+        this.totalTime = totalTime;
+
+        if(res >= 0){
+          res = this.string2num(res);
+          this.setTimes(res.m, res.s, res.ms);
+          this.raf = requestAnimationFrame(this.tick.bind(this, this.target, this.startTime, Date.now(), this.elapsedTime));
+        }else{
+          this.callEnd();
+        }
+      },
+      stop : function(){
+          if(this.raf){
+            cancelAnimationFrame(this.raf);
+            this.elapsedTime += this.totalTime;
+            this.raf = null;
+            this.fire('timerstop');
+          }
+      },
+      clear: function(){
+        this.initStatus();
+        this.fire('timerclear');
+      },
+      reset: function(){
+        this.stop();
+        this.initStatus();
+        this.initTime();
+        this.fire('timerreset');
+      },
+      initStatus: function(){
+        this.totalTime = 0;
+        this.elapsedTime = 0;
+        this.raf = null;
+      },
+      callEnd: function(){
+        this.setTimes(0, 0, 0);
+        this.fire('timerend');
+      },
+      polyfill: function(){
+        this.polyfillRaf();
+      },
+      polyfillRaf: function(){
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+          window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+      }
+    })
+  </script>
+
+</polymer-element>
