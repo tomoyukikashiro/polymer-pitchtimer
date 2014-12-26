@@ -1,0 +1,51 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-overlay/core-overlay.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input-decorator.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/core-input/core-input.html">
+
+<polymer-element name="timer-settings">
+  <template>
+    <div id="content" class="dialog">
+      <form>
+        <ul>
+          <li><paper-input-decorator id="decoTime" label="Time ( mm:ss )" floatingLabel error="format error"><input id="inputTime" is="core-input" pattern="^\d{2}:\d{2}$"></input></paper-input></li>
+          <li><paper-input-decorator id="decoWarning" label="Warning Time ( mm:ss )" floatingLabel><input id="inputWarning" is="coreInput" pattern="^\d{2}:\d{2}$"></input></paper-input></li>
+        </ul>
+        <paper-button id="done">DONE</paper-button>
+      </form>
+    </div>
+    <core-overlay id="overlay" layered backdrop></core-overlay>
+  </template>
+
+  <script>
+    Polymer('timer-settings', {
+      ready: function(){
+        this.$.overlay.target = this.$.content;
+        this.$.done.addEventListener('click', this.onClickDone.bind(this));
+      },
+      open: function(){
+        this.$.overlay.open();
+      },
+      onClickDone: function(){
+        var $decoTime = this.$.decoTime,
+            $decoWarning = this.$.decoWarning,
+            $inputTime = this.$.inputTime,
+            $inputWarning = this.$.inputWarning,
+            time = $inputTime.value,
+            warning = $inputWarning.value;
+
+        $decoTime.isInvalid = !$inputTime.validity.valid;
+        $decoWarning.isInvalid = !$inputWarning.validity.valid;
+
+        if(time.length === 0 && warning.length === 0){
+          this.$.overlay.close();
+        }
+        if(!$decoTime.isInvalid && !$decoWarning.isInvalid){
+          this.$.overlay.close();
+          this.fire('timer-settings-close', {time: time, warning: warning});
+        }
+      }
+    });
+  </script>
+</polymer-element>

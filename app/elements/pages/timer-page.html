@@ -6,6 +6,7 @@
   <template>
     <div fit>
       <countdown-timer id="timer" target="300000"></countdown-timer>
+      <timer-settings id="settings"></timer-settings>
       <paper-button id="controll">{{startText}}</paper-button>
       <paper-button id="reset">reset</paper-button>
     </div>
@@ -22,6 +23,17 @@
       initElm: function(){
         this.$.controll.addEventListener('click', this.onClickControll.bind(this));
         this.$.reset.addEventListener('click', this.onClickReset.bind(this));
+        this.$.timer.addEventListener('click', this.onClickTimer.bind(this));
+        this.$.settings.addEventListener('timer-settings-close', this.onCloseTimerSettings.bind(this));
+      },
+      onCloseTimerSettings: function(e){
+        var data = e.detail;
+        console.log(data);
+        // add regex in settings
+        // add convert number in timer
+      },
+      onClickTimer: function(){
+        this.$.settings.open();
       },
       onClickControll: function(){
         if(this.isStart()){
