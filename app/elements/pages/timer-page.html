@@ -5,7 +5,7 @@
 
   <template>
     <div fit>
-      <countdown-timer id="timer" target="300000"></countdown-timer>
+      <countdown-timer id="timer" target="03:00"></countdown-timer>
       <timer-settings id="settings"></timer-settings>
       <paper-button id="controll">{{startText}}</paper-button>
       <paper-button id="reset">reset</paper-button>
@@ -19,6 +19,7 @@
       disabledAttr : 'disabled',
       ready: function(){
         this.initElm();
+        this.bindEvent();
       },
       initElm: function(){
         this.$.controll.addEventListener('click', this.onClickControll.bind(this));
@@ -26,11 +27,13 @@
         this.$.timer.addEventListener('click', this.onClickTimer.bind(this));
         this.$.settings.addEventListener('timer-settings-close', this.onCloseTimerSettings.bind(this));
       },
+      bindEvent: function(){
+        // timer.end -> show times up -> click display -> call reset
+      },
       onCloseTimerSettings: function(e){
         var data = e.detail;
-        console.log(data);
-        // add regex in settings
-        // add convert number in timer
+        this.$.timer.target = data.time;
+        this.$.timer.warning = data.warning;
       },
       onClickTimer: function(){
         this.$.settings.open();
