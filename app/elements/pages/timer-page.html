@@ -5,14 +5,14 @@
 <polymer-element name="timer-page">
 
   <template>
-    <!-- <core-pages id="pages" fit valueattr="name" pages selected="timer"> -->
-    <core-pages id="pages" fit valueattr="name" pages selected="pitch-1">
-      <section name="pitch-1" class="pitch">pitch-1</section>
-      <section name="pitch-2" class="pitch">pitch-2</section>
-      <section name="pitch-3" class="pitch">pitch-3</section>
-      <section name="pitch-4" class="pitch">pitch-4</section>
-      <section id="timesup" name="timesup">Times Up</section>
-      <section id="timer" name="timer">
+    <!-- <core-pages id="pages" valueattr="name" pages selected="timer"> -->
+    <core-pages fit id="pages" valueattr="name" pages selected="pitch-1">
+      <section fit name="pitch-1" class="pitch">pitch-1</section>
+      <section fit name="pitch-2" class="pitch">pitch-2</section>
+      <section fit name="pitch-3" class="pitch">pitch-3</section>
+      <section fit name="pitch-4" class="pitch">pitch-4</section>
+      <section fit id="timesup" name="timesup">Times Up</section>
+      <section fit id="timer" name="timer">
         <countdown-timer id="timer" target="00:03"></countdown-timer>
         <timer-settings id="settings"></timer-settings>
         <paper-button id="controll">{{startText}}</paper-button>

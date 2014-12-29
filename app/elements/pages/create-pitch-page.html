@@ -1,0 +1,17 @@
+<link rel="import" href="../../bower_components/paper-input/paper-input-decorator.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="create-pitch-page">
+
+  <template>
+    <form id="create-pitch">
+      <paper-input-decorator id="decoTime" label="Time ( mm:ss )" floatingLabel error="format error"><input id="time" is="core-input" pattern="^\d{2}:\d{2}$"></input></paper-input-decorator>
+      <paper-input-decorator id="decoWarning" label="Warning Time ( mm:ss )" floatingLabel><input id="warning" is="coreInput" pattern="^\d{2}:\d{2}$"></input></paper-input-decorator>
+    </form>
+  </template>
+  <script>
+    Polymer('create-pitch-page', {
+    });
+  </script>
+
+</polymer-element>
