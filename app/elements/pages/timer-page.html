@@ -1,15 +1,24 @@
+<link rel="import" href="../../bower_components/core-pages/core-pages.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <polymer-element name="timer-page">
 
   <template>
-    <div fit>
-      <countdown-timer id="timer" target="03:00"></countdown-timer>
-      <timer-settings id="settings"></timer-settings>
-      <paper-button id="controll">{{startText}}</paper-button>
-      <paper-button id="reset">reset</paper-button>
-    </div>
+    <!-- <core-pages id="pages" fit valueattr="name" pages selected="timer"> -->
+    <core-pages id="pages" fit valueattr="name" pages selected="pitch-1">
+      <section name="pitch-1" class="pitch">pitch-1</section>
+      <section name="pitch-2" class="pitch">pitch-2</section>
+      <section name="pitch-3" class="pitch">pitch-3</section>
+      <section name="pitch-4" class="pitch">pitch-4</section>
+      <section id="timesup" name="timesup">Times Up</section>
+      <section id="timer" name="timer">
+        <countdown-timer id="timer" target="00:03"></countdown-timer>
+        <timer-settings id="settings"></timer-settings>
+        <paper-button id="controll">{{startText}}</paper-button>
+        <paper-button id="reset">reset</paper-button>
+      </section>
+    </core-pages>
   </template>
 
   <script>
@@ -17,7 +26,10 @@
       startText: 'START',
       stopText : 'STOP',
       disabledAttr : 'disabled',
+      currentPitch : 1,
+      pitchLength  : 0,
       ready: function(){
+        this.pitchLength = this.$.pages.querySelectorAll('.pitch').length;
         this.initElm();
         this.bindEvent();
       },
@@ -28,7 +40,37 @@
         this.$.settings.addEventListener('timer-settings-close', this.onCloseTimerSettings.bind(this));
       },
       bindEvent: function(){
-        // timer.end -> show times up -> click display -> call reset
+        this.$.timer.addEventListener('timerend', this.showEnd.bind(this));
+        this.$.timer.addEventListener('timerwarning', this.timerWarning.bind(this));
+        this.$.timesup.addEventListener('click', this.showNextPitch.bind(this));
+        this.$.pages.addEventListener('click', this.showTimer.bind(this));
+      },
+      timerWarning: function(){
+        this.$.timer.addClass('warning');
+      },
+      showTimer: function(e){
+        if(e.target.matches('.pitch')){
+          e.stopPropagation();
+          this.$.pages.selected = 'timer';
+        }
+      },
+      showEnd: function(){
+        if(this.hasPitch()){
+          this.currentPitch = this.currentPitch === this.pitchLength ? 1 : ++this.currentPitch;
+        }
+        this.toggleControllStatus();
+        this.$.pages.selected = 'timesup';
+        this.$.timer.removeClass('warning');
+      },
+      showNextPitch: function(){
+        if(this.hasPitch()){
+          this.$.pages.selected = 'pitch-' + this.currentPitch;
+        }else{
+          this.$.pages.selected = 'timer';
+        }
+      },
+      hasPitch: function(){
+        return this.pitchLength > 0;
       },
       onCloseTimerSettings: function(e){
         var data = e.detail;
@@ -41,10 +83,16 @@
       onClickControll: function(){
         if(this.isStart()){
           this.$.timer.start();
-          this.$.reset.setAttribute(this.disabledAttr, '');
         }else{
           this.$.timer.stop();
+        }
+        this.toggleControllStatus();
+      },
+      toggleControllStatus: function(){
+        if(this.$.reset.hasAttribute(this.disabledAttr)){
           this.$.reset.removeAttribute(this.disabledAttr);
+        }else{
+          this.$.reset.setAttribute(this.disabledAttr, '');
         }
         this.toggleControllText();
       },
@@ -56,6 +104,7 @@
       onClickReset: function(){
         if(!this.$.reset.hasAttribute(this.disabledAttr)){
           this.$.timer.reset();
+          this.$.timer.removeClass('warning');
         }
       },
       toggleControllText: function(){

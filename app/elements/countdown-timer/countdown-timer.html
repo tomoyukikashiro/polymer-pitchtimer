@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="countdown-timer" attributes="target separator warning finishMessage">
+<polymer-element name="countdown-timer" attributes="target separator warning">
 
   <template>
     <p><span id="m" class="m">{{m}}</span><span class="m separator">{{separator}}</span><span id="s" class="s">{{s}}</span><span class="s separator">{{separator}}</span><span id="ms" class="ms">{{ms}}</span></p>
@@ -15,7 +15,6 @@
       warningMsec   : null,
       calledWarning : false,
       separator    : ':',
-      finishMessage: 'Times Up',
       startTime    : null,
       totalTime    : 0,
       elapsedTime  : 0,
@@ -114,7 +113,6 @@
         this.totalTime = totalTime;
 
         if(this.warningMsec && res <= this.warningMsec && !this.calledWarning){
-          console.log(111);
           this.fire('timerwarning');
           this.calledWarning = true;
         }
