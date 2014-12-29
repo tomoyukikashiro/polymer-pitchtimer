@@ -40,6 +40,7 @@
 
         if(time.length === 0 && warning.length === 0){
           this.$.overlay.close();
+          return;
         }
         if(!$decoTime.isInvalid && !$decoWarning.isInvalid){
           this.$.overlay.close();

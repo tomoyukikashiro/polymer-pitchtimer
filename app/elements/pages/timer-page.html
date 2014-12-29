@@ -1,16 +1,13 @@
 <link rel="import" href="../../bower_components/core-pages/core-pages.html">
+<link rel="import" href="../../bower_components/core-icons/core-icons.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <polymer-element name="timer-page">
 
-  <template>
-    <!-- <core-pages id="pages" fit valueattr="name" pages selected="timer"> -->
-    <core-pages id="pages" fit valueattr="name" pages selected="pitch-1">
-      <section name="pitch-1" class="pitch">pitch-1</section>
-      <section name="pitch-2" class="pitch">pitch-2</section>
-      <section name="pitch-3" class="pitch">pitch-3</section>
-      <section name="pitch-4" class="pitch">pitch-4</section>
+ <template>
+    <core-pages id="pages" fit valueattr="name" pages selected="timer">
       <section id="timesup" name="timesup">Times Up</section>
       <section id="timer" name="timer">
         <countdown-timer id="timer" target="00:03"></countdown-timer>
@@ -19,6 +16,7 @@
         <paper-button id="reset">reset</paper-button>
       </section>
     </core-pages>
+    <paper-fab id="menu" icon="menu" title="menu"></paper-fab>
   </template>
 
   <script>
@@ -29,48 +27,30 @@
       currentPitch : 1,
       pitchLength  : 0,
       ready: function(){
-        this.pitchLength = this.$.pages.querySelectorAll('.pitch').length;
         this.initElm();
         this.bindEvent();
       },
       initElm: function(){
         this.$.controll.addEventListener('click', this.onClickControll.bind(this));
         this.$.reset.addEventListener('click', this.onClickReset.bind(this));
-        this.$.timer.addEventListener('click', this.onClickTimer.bind(this));
+        this.$.menu.addEventListener('click', this.onClickTimer.bind(this));
         this.$.settings.addEventListener('timer-settings-close', this.onCloseTimerSettings.bind(this));
       },
       bindEvent: function(){
         this.$.timer.addEventListener('timerend', this.showEnd.bind(this));
         this.$.timer.addEventListener('timerwarning', this.timerWarning.bind(this));
         this.$.timesup.addEventListener('click', this.showNextPitch.bind(this));
-        this.$.pages.addEventListener('click', this.showTimer.bind(this));
       },
       timerWarning: function(){
         this.$.timer.addClass('warning');
       },
-      showTimer: function(e){
-        if(e.target.matches('.pitch')){
-          e.stopPropagation();
-          this.$.pages.selected = 'timer';
-        }
-      },
       showEnd: function(){
-        if(this.hasPitch()){
-          this.currentPitch = this.currentPitch === this.pitchLength ? 1 : ++this.currentPitch;
-        }
         this.toggleControllStatus();
         this.$.pages.selected = 'timesup';
-        this.$.timer.removeClass('warning');
+        this.toggleWarning();
       },
       showNextPitch: function(){
-        if(this.hasPitch()){
-          this.$.pages.selected = 'pitch-' + this.currentPitch;
-        }else{
-          this.$.pages.selected = 'timer';
-        }
-      },
-      hasPitch: function(){
-        return this.pitchLength > 0;
+        this.$.pages.selected = 'timer';
       },
       onCloseTimerSettings: function(e){
         var data = e.detail;
@@ -104,7 +84,15 @@
       onClickReset: function(){
         if(!this.$.reset.hasAttribute(this.disabledAttr)){
           this.$.timer.reset();
-          this.$.timer.removeClass('warning');
+          this.toggleWarning();
+        }
+      },
+      toggleWarning: function(){
+        var cls = 'warning';
+        if(this.$.timer.classList.contains(cls)){
+          this.$.timer.classList.remove(cls);
+        }else{
+          this.$.timer.classList.add(cls);
         }
       },
       toggleControllText: function(){

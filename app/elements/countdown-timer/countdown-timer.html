@@ -136,7 +136,7 @@
       reset: function(){
         this.stop();
         this.initStatus();
-        this.initTime();
+        this.initTarget();
         this.fire('timerreset');
       },
       initStatus: function(){
@@ -146,7 +146,7 @@
         this.raf = null;
       },
       callEnd: function(){
-        this.setTimes(0, 0, 0);
+        this.initTarget();
         this.initStatus();
         this.fire('timerend');
       },
