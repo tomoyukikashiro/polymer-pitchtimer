@@ -7,16 +7,68 @@
 <polymer-element name="timer-page">
 
  <template>
-    <core-pages id="pages" fit valueattr="name" pages selected="timer">
-      <section id="timesup" name="timesup">Times Up</section>
-      <section id="timer" name="timer">
-        <countdown-timer id="timer" target="00:03"></countdown-timer>
+    <style>
+      .pages{
+        background-color: #4285f4;
+        color: #fff;
+      }
+      .pages.warning{
+        background-color: #ff8a80;
+      }
+      .menu{
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        background-color: #ff5252;
+      }
+
+      .timer{
+        font-size: 4.5rem;
+        margin-bottom: 50px;
+      }
+      .timer::shadow .separator{
+        margin: 0 10px;
+        position: relative;
+      }
+      .timer::shadow .m.separator{
+        top: -4px;
+      }
+      .timer::shadow .s.separator{
+        top: -2px;
+      }
+      .timer::shadow .s.separator,
+      .timer::shadow .ms{
+        font-size: 2rem;
+      }
+
+      .timesup{
+        font-size: 4.5rem;
+      }
+
+      @media screen and (min-width: 700px){
+        .timesup{
+          font-size: 7.5rem;
+        }
+      }
+      @media screen and (min-width: 900px){
+        .timesup{
+          font-size: 12rem;
+        }
+      }
+    </style>
+
+    <core-pages class="pages" id="pages" fit valueattr="name" pages selected="timer">
+      <section id="timesup" class="timesup" horizontal layout center center-justified name="timesup">Times Up</section>
+      <section id="timer" vertical layout center center-justified name="timer">
+        <countdown-timer id="timer" class="timer" target="03:00"></countdown-timer>
         <timer-settings id="settings"></timer-settings>
-        <paper-button id="controll">{{startText}}</paper-button>
-        <paper-button id="reset">reset</paper-button>
+        <div class="buttons">
+          <paper-button id="controll">{{startText}}</paper-button>
+          <paper-button id="reset">reset</paper-button>
+        </div>
       </section>
     </core-pages>
-    <paper-fab id="menu" icon="menu" title="menu"></paper-fab>
+    <paper-fab class="menu" id="menu" icon="menu" title="menu"></paper-fab>
   </template>
 
   <script>
@@ -42,12 +94,12 @@
         this.$.timesup.addEventListener('click', this.showNextPitch.bind(this));
       },
       timerWarning: function(){
-        this.$.timer.addClass('warning');
+        this.toggleWarning();
       },
       showEnd: function(){
         this.toggleControllStatus();
         this.$.pages.selected = 'timesup';
-        this.toggleWarning();
+        this.clearWarning();
       },
       showNextPitch: function(){
         this.$.pages.selected = 'timer';
@@ -84,16 +136,19 @@
       onClickReset: function(){
         if(!this.$.reset.hasAttribute(this.disabledAttr)){
           this.$.timer.reset();
-          this.toggleWarning();
+          this.clearWarning();
         }
       },
-      toggleWarning: function(){
+      toggleWarning: function(forceRemove){
         var cls = 'warning';
-        if(this.$.timer.classList.contains(cls)){
-          this.$.timer.classList.remove(cls);
+        if(forceRemove || this.$.pages.classList.contains(cls)){
+          this.$.pages.classList.remove(cls);
         }else{
-          this.$.timer.classList.add(cls);
+          this.$.pages.classList.add(cls);
         }
+      },
+      clearWarning: function(){
+        this.toggleWarning(true);
       },
       toggleControllText: function(){
         var elm = this.$.controll,

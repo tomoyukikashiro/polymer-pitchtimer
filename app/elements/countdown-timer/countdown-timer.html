@@ -4,6 +4,11 @@
 <polymer-element name="countdown-timer" attributes="target separator warning">
 
   <template>
+    <style>
+      p{
+        margin: 0;
+      }
+    </style>
     <p><span id="m" class="m">{{m}}</span><span class="m separator">{{separator}}</span><span id="s" class="s">{{s}}</span><span class="s separator">{{separator}}</span><span id="ms" class="ms">{{ms}}</span></p>
   </template>
 
