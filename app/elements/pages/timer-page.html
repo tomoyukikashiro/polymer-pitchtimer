@@ -7,56 +7,7 @@
 <polymer-element name="timer-page">
 
  <template>
-    <style>
-      .pages{
-        background-color: #4285f4;
-        color: #fff;
-      }
-      .pages.warning{
-        background-color: #ff8a80;
-      }
-      .menu{
-        position: absolute;
-        bottom: 30px;
-        right: 30px;
-        background-color: #ff5252;
-      }
-
-      .timer{
-        font-size: 4.5rem;
-        margin-bottom: 50px;
-      }
-      .timer::shadow .separator{
-        margin: 0 10px;
-        position: relative;
-      }
-      .timer::shadow .m.separator{
-        top: -4px;
-      }
-      .timer::shadow .s.separator{
-        top: -2px;
-      }
-      .timer::shadow .s.separator,
-      .timer::shadow .ms{
-        font-size: 2rem;
-      }
-
-      .timesup{
-        font-size: 4.5rem;
-      }
-
-      @media screen and (min-width: 700px){
-        .timesup{
-          font-size: 7.5rem;
-        }
-      }
-      @media screen and (min-width: 900px){
-        .timesup{
-          font-size: 12rem;
-        }
-      }
-    </style>
-
+    <link rel="stylesheet" href="timer-page.css" media="all">
     <core-pages class="pages" id="pages" fit valueattr="name" pages selected="timer">
       <section id="timesup" class="timesup" horizontal layout center center-justified name="timesup">Times Up</section>
       <section id="timer" vertical layout center center-justified name="timer">
@@ -64,7 +15,7 @@
         <timer-settings id="settings"></timer-settings>
         <div class="buttons">
           <paper-button id="controll">{{startText}}</paper-button>
-          <paper-button id="reset">reset</paper-button>
+          <paper-button class="reset" id="reset">reset</paper-button>
         </div>
       </section>
     </core-pages>
