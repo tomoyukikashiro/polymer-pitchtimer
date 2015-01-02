@@ -1,0 +1,111 @@
+<link rel="import" href="../../bower_components/core-pages/core-pages.html">
+<link rel="import" href="../../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="timer-page">
+
+ <template>
+    <link rel="stylesheet" href="timer-page.css" media="all">
+    <core-pages class="pages" id="pages" fit valueattr="name" pages selected="timer">
+      <section id="timesup" class="timesup" horizontal layout center center-justified name="timesup">Times Up</section>
+      <section id="timer" vertical layout center center-justified name="timer">
+        <countdown-timer id="timer" class="timer" target="03:00"></countdown-timer>
+        <timer-settings id="settings"></timer-settings>
+        <div class="buttons">
+          <paper-button id="controll">{{startText}}</paper-button>
+          <paper-button class="reset" id="reset">reset</paper-button>
+        </div>
+      </section>
+    </core-pages>
+    <paper-fab class="menu" id="menu" icon="menu" title="menu"></paper-fab>
+  </template>
+
+  <script>
+    Polymer('timer-page', {
+      startText: 'START',
+      stopText : 'STOP',
+      disabledAttr : 'disabled',
+      currentPitch : 1,
+      pitchLength  : 0,
+      ready: function(){
+        this.initElm();
+        this.bindEvent();
+      },
+      initElm: function(){
+        this.$.controll.addEventListener('click', this.onClickControll.bind(this));
+        this.$.reset.addEventListener('click', this.onClickReset.bind(this));
+        this.$.menu.addEventListener('click', this.onClickTimer.bind(this));
+        this.$.settings.addEventListener('timer-settings-close', this.onCloseTimerSettings.bind(this));
+      },
+      bindEvent: function(){
+        this.$.timer.addEventListener('timerend', this.showEnd.bind(this));
+        this.$.timer.addEventListener('timerwarning', this.timerWarning.bind(this));
+        this.$.timesup.addEventListener('click', this.showNextPitch.bind(this));
+      },
+      timerWarning: function(){
+        this.toggleWarning();
+      },
+      showEnd: function(){
+        this.toggleControllStatus();
+        this.$.pages.selected = 'timesup';
+        this.clearWarning();
+      },
+      showNextPitch: function(){
+        this.$.pages.selected = 'timer';
+      },
+      onCloseTimerSettings: function(e){
+        var data = e.detail;
+        this.$.timer.target = data.time;
+        this.$.timer.warning = data.warning;
+      },
+      onClickTimer: function(){
+        this.$.settings.open();
+      },
+      onClickControll: function(){
+        if(this.isStart()){
+          this.$.timer.start();
+        }else{
+          this.$.timer.stop();
+        }
+        this.toggleControllStatus();
+      },
+      toggleControllStatus: function(){
+        if(this.$.reset.hasAttribute(this.disabledAttr)){
+          this.$.reset.removeAttribute(this.disabledAttr);
+        }else{
+          this.$.reset.setAttribute(this.disabledAttr, '');
+        }
+        this.toggleControllText();
+      },
+      isStart: function(){
+        var elm = this.$.controll,
+            text = elm.innerText;
+        return text === this.startText;
+      },
+      onClickReset: function(){
+        if(!this.$.reset.hasAttribute(this.disabledAttr)){
+          this.$.timer.reset();
+          this.clearWarning();
+        }
+      },
+      toggleWarning: function(forceRemove){
+        var cls = 'warning';
+        if(forceRemove || this.$.pages.classList.contains(cls)){
+          this.$.pages.classList.remove(cls);
+        }else{
+          this.$.pages.classList.add(cls);
+        }
+      },
+      clearWarning: function(){
+        this.toggleWarning(true);
+      },
+      toggleControllText: function(){
+        var elm = this.$.controll,
+            next = this.isStart() ? this.stopText : this.startText;
+        elm.innerText = next;
+      },
+    });
+  </script>
+

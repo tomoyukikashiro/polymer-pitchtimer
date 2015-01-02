@@ -1,0 +1,168 @@
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="countdown-timer" attributes="target separator warning">
+
+  <template>
+    <style>
+      p{
+        margin: 0;
+      }
+    </style>
+    <p><span id="m" class="m">{{m}}</span><span class="m separator">{{separator}}</span><span id="s" class="s">{{s}}</span><span class="s separator">{{separator}}</span><span id="ms" class="ms">{{ms}}</span></p>
+  </template>
+
+  <script>
+    Polymer('countdown-timer', {
+      target       : null,
+      targetMsec   : null,
+      warning      : null,
+      warningMsec   : null,
+      calledWarning : false,
+      separator    : ':',
+      startTime    : null,
+      totalTime    : 0,
+      elapsedTime  : 0,
+      ready: function(){
+        var me = this;
+        me.initTime();
+        me.polyfill();
+        me.initElm();
+      },
+      initTime: function(){
+        this.initTarget();
+        this.initWarning();
+      },
+      targetChanged: function(){
+        this.initTarget();
+      },
+      warningChanged: function(){
+        this.initWarning();
+      },
+      initWarning: function(){
+        if(this.warning){
+          this.warningMsec = this.splitTime(this.warning).totalMsec;
+        }
+      },
+      initTarget: function(){
+        var split = this.splitTime(this.target);
+        this.targetMsec = split.totalMsec
+        this.setTimes(split.m, split.s, 000);
+      },
+      splitTime: function(time){
+        var separate = time.split(':'),
+            m = separate[0],
+            s = separate[1];
+            msec = this.string2Msec(m, s);
+        return {
+          m : m,
+          s : s,
+          totalMsec : msec
+        };
+      },
+      initTarget: function(){
+        var separate = this.target.split(':'),
+            m = separate[0],
+            s = separate[1],
+            targetMsec = this.string2Msec(m, s);
+        this.targetMsec = targetMsec;
+        this.setTimes(m, s, 000);
+      },
+      zeroPadding: function(num, length){
+        return num.toLocaleString( "ja-JP" , { useGrouping : false , minimumIntegerDigits : length });
+      },
+      setTimes: function(m, s, ms){
+        this.m = this.zeroPadding(m, 2);
+        this.s = this.zeroPadding(s, 2);
+        this.ms = this.zeroPadding(ms, 3);
+      },
+      string2Msec : function(m, s){
+        return (m*60*1000) + (s*1000);
+      },
+      separateTime: function(msec){
+        var m = Math.floor(msec/1000/60),
+            s = Math.floor(msec/1000) - (m*60),
+            ms = msec - (m*1000*60) - (s*1000);
+        return { m : m, s : s, ms: ms };
+      },
+      zeroPadding: function(num, length){
+        return num.toLocaleString( "ja-JP" , { useGrouping : false , minimumIntegerDigits : length });
+      },
+      setTimes: function(m, s, ms){
+        this.m = this.zeroPadding(m, 2);
+        this.s = this.zeroPadding(s, 2);
+        this.ms = this.zeroPadding(ms, 3);
+      },
+      string2Msec : function(m, s){
+        return (m*60*1000) + (s*1000);
+      },
+      separateTime: function(msec){
+        var m = Math.floor(msec/1000/60),
+            s = Math.floor(msec/1000) - (m*60),
+            ms = msec - (m*1000*60) - (s*1000);
+        return { m : m, s : s, ms: ms };
+      },
+      initElm: function(){
+        this.elmM = this.$.m;
+        this.elmS = this.$.s;
+        this.elmMs = this.$.ms;
+      },
+      start: function(){
+        this.startTime = Date.now();
+        this.raf = requestAnimationFrame(this.tick.bind(this, this.targetMsec, this.startTime, Date.now(), this.elapsedTime));
+      },
+      tick: function(target, startTime, current, elapsed){
+        var totalTime = current - startTime;
+        var res = target - (totalTime + elapsed);
+
+        this.totalTime = totalTime;
+
+        if(this.warningMsec && res <= this.warningMsec && !this.calledWarning){
+          this.fire('timerwarning');
+          this.calledWarning = true;
+        }
+
+        if(res >= 0){
+          res = this.separateTime(res);
+          this.setTimes(res.m, res.s, res.ms);
+          this.raf = requestAnimationFrame(this.tick.bind(this, this.targetMsec, this.startTime, Date.now(), this.elapsedTime));
+        }else{
+          this.callEnd();
+        }
+      },
+      stop : function(){
+          if(this.raf){
+            cancelAnimationFrame(this.raf);
+            this.elapsedTime += this.totalTime;
+            this.raf = null;
+            this.fire('timerstop');
+          }
+      },
+      reset: function(){
+        this.stop();
+        this.initStatus();
+        this.initTarget();
+        this.fire('timerreset');
+      },
+      initStatus: function(){
+        this.totalTime = 0;
+        this.elapsedTime = 0;
+        this.calledWarning = false;
+        this.raf = null;
+      },
+      callEnd: function(){
+        this.initTarget();
+        this.initStatus();
+        this.fire('timerend');
+      },
+      polyfill: function(){
+        this.polyfillRaf();
+      },
+      polyfillRaf: function(){
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+          window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+      }
+    })
+  </script>
+
+</polymer-element>
