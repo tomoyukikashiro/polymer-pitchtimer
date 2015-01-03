@@ -1,0 +1,30 @@
+:host {
+  background-color: #fff;
+  padding: 30px 30px 70px 30px;
+  min-width: 80%;
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
+li {
+  list-style: none;
+  margin-bottom: 10px;
+}
+.title{
+  margin: 0 0 10px 0;
+  font-weight: normal;
+  font-size: 1.5rem;
+}
+.done{
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+@media screen and (min-width: 500px){
+  :host {
+    min-width: initial;
+    width: 400px;
+  }
+}
+

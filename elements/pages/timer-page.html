@@ -9,17 +9,17 @@
  <template>
     <link rel="stylesheet" href="timer-page.css" media="all">
     <core-pages class="pages" id="pages" fit valueattr="name" pages selected="timer">
-      <section id="timesup" class="timesup" horizontal layout center center-justified name="timesup">Times Up</section>
+    <section on-click="{{showNextPitch}}" id="timesup" class="timesup" horizontal layout center center-justified name="timesup">Times Up</section>
       <section id="timer" vertical layout center center-justified name="timer">
         <countdown-timer id="timer" class="timer" target="03:00"></countdown-timer>
         <timer-settings id="settings"></timer-settings>
         <div class="buttons">
-          <paper-button id="controll">{{startText}}</paper-button>
-          <paper-button class="reset" id="reset">reset</paper-button>
+          <paper-button on-click="{{onClickControl}}" id="control">{{startText}}</paper-button>
+          <paper-button on-click="{{onClickReset}}" class="reset" id="reset">reset</paper-button>
         </div>
       </section>
     </core-pages>
-    <paper-fab class="menu" id="menu" icon="menu" title="menu"></paper-fab>
+    <paper-fab on-click="{{onClickTimer}}" class="menu" id="menu" icon="menu" title="menu"></paper-fab>
   </template>
 
   <script>
@@ -34,21 +34,17 @@
         this.bindEvent();
       },
       initElm: function(){
-        this.$.controll.addEventListener('click', this.onClickControll.bind(this));
-        this.$.reset.addEventListener('click', this.onClickReset.bind(this));
-        this.$.menu.addEventListener('click', this.onClickTimer.bind(this));
         this.$.settings.addEventListener('timer-settings-close', this.onCloseTimerSettings.bind(this));
       },
       bindEvent: function(){
         this.$.timer.addEventListener('timerend', this.showEnd.bind(this));
         this.$.timer.addEventListener('timerwarning', this.timerWarning.bind(this));
-        this.$.timesup.addEventListener('click', this.showNextPitch.bind(this));
       },
       timerWarning: function(){
         this.toggleWarning();
       },
       showEnd: function(){
-        this.toggleControllStatus();
+        this.toggleControlStatus();
         this.$.pages.selected = 'timesup';
         this.clearWarning();
       },
@@ -63,26 +59,26 @@
       onClickTimer: function(){
         this.$.settings.open();
       },
-      onClickControll: function(){
+      onClickControl: function(){
         if(this.isStart()){
           this.$.timer.start();
         }else{
           this.$.timer.stop();
         }
-        this.toggleControllStatus();
+        this.toggleControlStatus();
       },
-      toggleControllStatus: function(){
+      toggleControlStatus: function(){
         if(this.$.reset.hasAttribute(this.disabledAttr)){
           this.$.reset.removeAttribute(this.disabledAttr);
         }else{
           this.$.reset.setAttribute(this.disabledAttr, '');
         }
-        this.toggleControllText();
+        this.toggleControlText();
       },
       isStart: function(){
-        var elm = this.$.controll,
-            text = elm.innerText;
-        return text === this.startText;
+        var elm = this.$.control,
+            text = elm.innerText.trim();
+        return text == this.startText;
       },
       onClickReset: function(){
         if(!this.$.reset.hasAttribute(this.disabledAttr)){
@@ -101,8 +97,8 @@
       clearWarning: function(){
         this.toggleWarning(true);
       },
-      toggleControllText: function(){
-        var elm = this.$.controll,
+      toggleControlText: function(){
+        var elm = this.$.control,
             next = this.isStart() ? this.stopText : this.startText;
         elm.innerText = next;
       },

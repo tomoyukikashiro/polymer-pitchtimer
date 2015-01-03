@@ -6,37 +6,7 @@
 
 <polymer-element name="timer-settings">
   <template>
-    <style>
-      :host {
-        background-color: #fff;
-        padding: 30px 30px 70px 30px;
-        min-width: 80%;
-      }
-      ul {
-        margin: 0;
-        padding: 0;
-      }
-      li {
-        list-style: none;
-        margin-bottom: 10px;
-      }
-      .title{
-        margin: 0 0 10px 0;
-        font-weight: normal;
-        font-size: 1.5rem;
-      }
-      .done{
-        position: absolute;
-        right: 20px;
-        bottom: 20px;
-      }
-      @media screen and (min-width: 500px){
-        :host {
-          min-width: initial;
-          width: 400px;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="timer-settings.css" media="all">
     <div id="content" class="dialog">
       <h1 class="title">Settings</h1>
       <form>
@@ -44,7 +14,7 @@
           <li><paper-input-decorator id="decoTime" label="Time ( mm:ss )" floatingLabel error="format error"><input id="inputTime" is="core-input" pattern="^\d{2}:\d{2}$"></input></paper-input></li>
           <li><paper-input-decorator id="decoWarning" label="Warning Time ( mm:ss )" floatingLabel error="format error"><input id="inputWarning" is="coreInput" pattern="^\d{2}:\d{2}$"></input></paper-input></li>
         </ul>
-        <paper-button class="done" id="done">DONE</paper-button>
+        <paper-button on-click="{{onClickDone}}" class="done" id="done">DONE</paper-button>
       </form>
     </div>
     <core-overlay id="overlay" layered backdrop></core-overlay>
@@ -54,7 +24,6 @@
     Polymer('timer-settings', {
       ready: function(){
         this.$.overlay.target = this;
-        this.$.done.addEventListener('click', this.onClickDone.bind(this));
       },
       open: function(){
         this.$.overlay.open();

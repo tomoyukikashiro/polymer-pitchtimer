@@ -44,11 +44,6 @@
           this.warningMsec = this.splitTime(this.warning).totalMsec;
         }
       },
-      initTarget: function(){
-        var split = this.splitTime(this.target);
-        this.targetMsec = split.totalMsec
-        this.setTimes(split.m, split.s, 000);
-      },
       splitTime: function(time){
         var separate = time.split(':'),
             m = separate[0],
@@ -66,27 +61,10 @@
             s = separate[1],
             targetMsec = this.string2Msec(m, s);
         this.targetMsec = targetMsec;
-        this.setTimes(m, s, 000);
+        this.setTimes(m, s, '000');
       },
-      zeroPadding: function(num, length){
-        return num.toLocaleString( "ja-JP" , { useGrouping : false , minimumIntegerDigits : length });
-      },
-      setTimes: function(m, s, ms){
-        this.m = this.zeroPadding(m, 2);
-        this.s = this.zeroPadding(s, 2);
-        this.ms = this.zeroPadding(ms, 3);
-      },
-      string2Msec : function(m, s){
-        return (m*60*1000) + (s*1000);
-      },
-      separateTime: function(msec){
-        var m = Math.floor(msec/1000/60),
-            s = Math.floor(msec/1000) - (m*60),
-            ms = msec - (m*1000*60) - (s*1000);
-        return { m : m, s : s, ms: ms };
-      },
-      zeroPadding: function(num, length){
-        return num.toLocaleString( "ja-JP" , { useGrouping : false , minimumIntegerDigits : length });
+      zeroPadding: function(number, length){
+        return (Array(length).join('0') + number).slice(-length).toString();
       },
       setTimes: function(m, s, ms){
         this.m = this.zeroPadding(m, 2);
