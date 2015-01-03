@@ -1,2 +1,2 @@
 
-# [WIP] Material Design Pitch Timer
+# Polymer Pitch Timer
