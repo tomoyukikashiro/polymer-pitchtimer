@@ -1,34 +1,39 @@
-<link rel="import" href="../../bower_components/core-pages/core-pages.html">
-<link rel="import" href="../../bower_components/core-icons/core-icons.html">
+<!-- <link rel="import" href="../../bower_components/core-pages/core-pages.html"> -->
+<!-- <link rel="import" href="../../bower_components/core-icons/core-icons.html"> -->
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="timer-page">
+<dom-module id="timer-page">
 
+ <link rel="import" type="css" href="timer-page.css">
  <template>
-    <link rel="stylesheet" href="timer-page.css" media="all">
-    <core-pages class="pages" id="pages" fit valueattr="name" pages selected="timer">
-    <section on-click="{{showNextPitch}}" id="timesup" class="timesup" horizontal layout center center-justified name="timesup">Times Up</section>
-      <section id="timer" vertical layout center center-justified name="timer">
+    <iron-pages class="pages" id="pages" selected="1">
+      <section class="page-section timesup" on-click="showNextPitch" id="timesup-section">Times Up</section>
+      <section class="page-section timer-section" id="timer-section">
         <countdown-timer id="timer" class="timer" target="03:00"></countdown-timer>
         <timer-settings id="settings"></timer-settings>
         <div class="buttons">
-          <paper-button on-click="{{onClickControl}}" id="control">{{startText}}</paper-button>
-          <paper-button on-click="{{onClickReset}}" class="reset" id="reset">reset</paper-button>
+          <paper-button on-click="onClickControl" id="control">{{startText}}</paper-button>
+          <paper-button on-click="onClickReset" class="reset" id="reset">reset</paper-button>
         </div>
       </section>
-    </core-pages>
-    <paper-fab on-click="{{onClickTimer}}" class="menu" id="menu" icon="menu" title="menu"></paper-fab>
+    </iron-pages>
+    <paper-fab on-click="onClickTimer" class="menu" id="menu" icon="menu" title="menu"></paper-fab>
   </template>
-
   <script>
-    Polymer('timer-page', {
-      startText: 'START',
-      stopText : 'STOP',
-      disabledAttr : 'disabled',
-      currentPitch : 1,
-      pitchLength  : 0,
+    Polymer({
+      is           : 'timer-page',
+      properties: {
+        startText    : {type: String, value: 'START'},
+        stopText     : {type: String, value: 'STOP'},
+        disabledAttr : {type: String, value: 'disabled'},
+        currentPitch : {type: Number, value: 1},
+        pitchLength  : {type: Number, value: 0},
+      },
       ready: function(){
         this.initElm();
         this.bindEvent();
@@ -45,11 +50,11 @@
       },
       showEnd: function(){
         this.toggleControlStatus();
-        this.$.pages.selected = 'timesup';
+        this.$.pages.selected = 0;
         this.clearWarning();
       },
       showNextPitch: function(){
-        this.$.pages.selected = 'timer';
+        this.$.pages.selected = 1;
       },
       onCloseTimerSettings: function(e){
         var data = e.detail;
@@ -104,4 +109,7 @@
       },
     });
   </script>
+
+</dom-module>
+
 

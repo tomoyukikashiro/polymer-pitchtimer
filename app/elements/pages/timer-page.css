@@ -1,9 +1,19 @@
 .pages{
+  @apply(--layout-fit);
   background-color: #4285f4;
   color: #fff;
 }
 .pages.warning{
   background-color: #ff8a80;
+}
+.page-section{
+  @apply(--layout-fit);
+  @apply(--layout-horizontal);
+  @apply(--layout-center);
+  @apply(--layout-center-justified);
+}
+.page-section.timer-section{
+  @apply(--layout-vertical);
 }
 .menu{
   position: absolute;
@@ -11,7 +21,6 @@
   right: 30px;
   background-color: #ff5252;
 }
-
 .timer{
   font-size: 3.5rem;
   margin-bottom: 50px;

@@ -1,6 +1,6 @@
-:host {
+.dialog {
   background-color: #fff;
-  padding: 30px 30px 70px 30px;
+  padding: 30px;
   min-width: 80%;
 }
 ul {
@@ -16,13 +16,11 @@ li {
   font-weight: normal;
   font-size: 1.5rem;
 }
-.done{
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
+.button-wrap{
+  text-align: right;
 }
 @media screen and (min-width: 500px){
-  :host {
+  .dialog {
     min-width: initial;
     width: 400px;
   }

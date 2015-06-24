@@ -1,53 +1,44 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/core-overlay/core-overlay.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input-decorator.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/core-input/core-input.html">
 
-<polymer-element name="timer-settings">
+<dom-module id="timer-settings">
+  <link rel="import" type="css" href="timer-settings.css">
   <template>
-    <link rel="stylesheet" href="timer-settings.css" media="all">
-    <div id="content" class="dialog">
+    <paper-dialog id="content" class="dialog" modal>
       <h1 class="title">Settings</h1>
-      <form>
+      <form class="form">
         <ul>
-          <li><paper-input-decorator id="decoTime" label="Time ( mm:ss )" floatingLabel error="format error"><input id="inputTime" is="core-input" pattern="^\d{2}:\d{2}$"></input></paper-input></li>
-          <li><paper-input-decorator id="decoWarning" label="Warning Time ( mm:ss )" floatingLabel error="format error"><input id="inputWarning" is="coreInput" pattern="^\d{2}:\d{2}$"></input></paper-input></li>
+          <li><paper-input id="inputTime" label="Time ( mm:ss )" error-message="format error" pattern="^\d{2}:\d{2}$"></paper-input></li>
+          <li><paper-input id="inputWarning" label="Warning Time ( mm:ss )" error-message="format error" pattern="^\d{2}:\d{2}$"></paper-input></li>
         </ul>
-        <paper-button on-click="{{onClickDone}}" class="done" id="done">DONE</paper-button>
       </form>
-    </div>
-    <core-overlay id="overlay" layered backdrop></core-overlay>
+      <div class="button-wrap">
+        <paper-button on-click="onClickDone" class="done" id="done">DONE</paper-button>
+      </div>
+    </paper-dialog>
   </template>
-
   <script>
-    Polymer('timer-settings', {
-      ready: function(){
-        this.$.overlay.target = this;
-      },
+    Polymer({
+      is   : 'timer-settings',
       open: function(){
-        this.$.overlay.open();
+        this.$.content.open();
       },
       onClickDone: function(){
-        var $decoTime = this.$.decoTime,
-            $decoWarning = this.$.decoWarning,
-            $inputTime = this.$.inputTime,
+        var $inputTime = this.$.inputTime,
             $inputWarning = this.$.inputWarning,
             time = $inputTime.value,
             warning = $inputWarning.value;
 
-        $decoTime.isInvalid = !$inputTime.validity.valid;
-        $decoWarning.isInvalid = !$inputWarning.validity.valid;
-
         if(time.length === 0 && warning.length === 0){
-          this.$.overlay.close();
+          this.$.content.close();
           return;
         }
-        if(!$decoTime.isInvalid && !$decoWarning.isInvalid){
-          this.$.overlay.close();
+        if($inputTime.validate() && $inputWarning.validate()){
+          this.$.content.close();
           this.fire('timer-settings-close', {time: time, warning: warning});
         }
       }
     });
   </script>
-</polymer-element>
+</dom-module>
