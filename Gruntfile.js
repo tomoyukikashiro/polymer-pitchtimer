@@ -192,7 +192,6 @@ module.exports = function (grunt) {
     vulcanize: {
       default: {
         options: {
-          strip: true
         },
         files: {
           '<%= yeoman.dist %>/elements/elements.vulcanized.html': [
@@ -320,8 +319,8 @@ module.exports = function (grunt) {
     'autoprefixer',
     'uglify',
     'vulcanize',
-    'usemin',
-    'minifyHtml'
+    'usemin'
+    //'minifyHtml'
   ]);
 
   grunt.registerTask('default', [
