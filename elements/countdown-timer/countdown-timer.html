@@ -1,28 +1,35 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="countdown-timer" attributes="target separator warning">
+<dom-module id="countdown-timer" attributes="target separator warning">
 
+  <style is="custom-style">
+    p{
+      margin: 0;
+    }
+  </style>
   <template>
-    <style>
-      p{
-        margin: 0;
-      }
-    </style>
-    <p><span id="m" class="m">{{m}}</span><span class="m separator">{{separator}}</span><span id="s" class="s">{{s}}</span><span class="s separator">{{separator}}</span><span id="ms" class="ms">{{ms}}</span></p>
+  <p><span id="m" class="m">{{m}}</span><span class="m separator">{{separator}}</span><span id="s" class="s">{{s}}</span><span class="s separator">{{separator}}</span><span id="ms" class="ms">{{ms}}</span></p>
   </template>
-
   <script>
-    Polymer('countdown-timer', {
-      target       : null,
-      targetMsec   : null,
-      warning      : null,
-      warningMsec   : null,
-      calledWarning : false,
-      separator    : ':',
-      startTime    : null,
-      totalTime    : 0,
-      elapsedTime  : 0,
+    Polymer({
+      is            : 'countdown-timer',
+
+      properties: {
+        target        : { type: String,  value: undefined, reflectToAttribute: true, observer: 'targetChanged' },
+        targetMsec    : { type: String,  value: undefined },
+        warning       : { type: String,  value: undefined, reflectToAttribute: true, observer: 'warningChanged' },
+        warningMsec   : { type: String,  value: undefined },
+        calledWarning : { type: Boolean, value: false },
+        separator     : { type: String,  value: ':' },
+        startTime     : { type: String,  value: undefined },
+        totalTime     : { type: Number,  value: 0 },
+        elapsedTime   : { type: Number,  value: 0 },
+        m             : { type: Number,  value: 0 },
+        s             : { type: Number,  value: 0 },
+        ms            : { type: Number,  value: 0 }
+      },
+
       ready: function(){
         var me = this;
         me.initTime();
@@ -143,4 +150,6 @@
     })
   </script>
 
-</polymer-element>
+</dom-module>
+
+
