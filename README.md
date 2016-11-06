@@ -1,4 +1,4 @@
 
 # Polymer Pitch Timer
 
-[demo](http://kashiro.github.io/polymer-pitchtimer/)
+[demo](http://tomoyukikashiro.github.io/polymer-pitchtimer/)
